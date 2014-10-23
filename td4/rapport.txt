@@ -1,0 +1,19 @@
+question 1.1
+	tids is used to store the id of all the threads
+	tids = malloc (nb_threads*sizeof(pthread_t))
+	no initialisation more than the malloc
+	free (tids)
+
+question 1.2
+	http://man7.org/linux/man-pages/man3/pthread_create.3.html
+
+question 1.3
+	The usleep() function suspends execution of the calling thread for (at least) usec microseconds.
+	it changes the state of the threads from active to asleep.
+	it should change for every execution
+
+question 1.4
+	it waits for all the threads to terminate, then it returns EXIT_SUCCES
+	at the end of there executions, the threads returns their tid.
+	the program will end before than all the threads finishes their execution. they will then be closed by force by the os
+

@@ -1,0 +1,112 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+typedef struct
+{
+	int start, end, *q, pos;
+}table_s, *table;
+
+int nbthread = 4, n = 20;
+int *rethread;
+
+typedef struct
+{
+	int i;
+	pthread_mutex_t *mutex;
+}patate_s, *patate;
+
+int *rethread;
+patate o;
+
+//------------------------------------------------------------
+int sumseq(int *q, int n)
+{
+	int ret=0;
+	for (int i=0 ; i< n ; i++)
+		ret += q[i];
+	return ret;
+}
+//------------------------------------------------------------
+void *sum(void *a)
+{
+	int ret = 0;
+	table s = (table)a;
+	for(int i=s->start ; i<=s->end ; i++)
+		ret += s->q[i];
+	pthread_mutex_lock(o->mutex);
+	rethread[o->i] = ret;
+	o->i++;
+	pthread_mutex_unlock(o->mutex);
+	return NULL;
+}
+//------------------------------------------------------------
+int sumthread(int *q, int n)
+{
+	pthread_t tids[nbthread];
+	table *s = malloc(sizeof(table_s)*nbthread);
+	for(int i=0 ; i<nbthread ; i++)
+	{
+		s[i] = malloc(sizeof(table_s));
+		s[i]->q = q;
+		s[i]->start = i*(n/nbthread);
+		s[i]->end = (i+1)*(n/nbthread) -1;
+		s[i]->pos = i;
+		pthread_create(&tids[i], NULL, sum, s[i]);
+	}
+	for(int i = 0 ; i<nbthread ; i++)
+	{
+		pthread_join (tids[i], NULL);
+		free(s[i]);
+	}
+	free(s);
+	return sumseq(rethread, nbthread);
+}
+//------------------------------------------------------------
+int main(int argc, char *argv[])
+{
+	o = malloc(sizeof(patate_s));
+	o->mutex = malloc(sizeof(pthread_mutex_t));
+	srand(time(0));
+	if (argc < 3)
+		printf("strarting with n = 20 and nbthread = 4\n");
+	else if (argc == 3)
+	{
+		n = atoi(argv[1]);
+		nbthread = atoi(argv[2]);
+		printf("strarting with n = %i and nbthread = %i\n", n, nbthread);
+	}
+	else
+	{
+		printf("to many values.\n use : ./main n nbthread\n");
+		exit(0);
+	}
+
+	rethread = malloc(sizeof(int)*nbthread);
+
+
+	int q[n];
+	for(int i=0; i<n ; i++)
+		q[i] = rand()%40;
+
+	time_t a, b;
+	a = nanotime(0);
+	int reta = sumseq(q,n);
+	a = nanotime(0) - a;
+	b = nanotime(0);
+	int retb = sumthread(q,n);
+	b = nanotime(0) - b;
+	
+	if (reta == retb)
+		printf("patate\n");
+	else
+		printf("papillon\n");
+
+	printf("executed linear sum in %i ms and threaded sum in %i ms\n", (int)a, (int)b);
+
+	return 0;
+}
+//------------------------------------------------------------
