@@ -1,26 +1,27 @@
-question 1.1
-	tids is used to store the id of all the threads
-	tids = malloc (nb_threads*sizeof(pthread_t))
-	no initialisation more than the malloc
-	free (tids)
+I. a first program...
+	question 1.1
+		tids is used to store the id of all the threads
+		tids = malloc (nb_threads*sizeof(pthread_t))
+		no initialisation more than the malloc
+		free (tids)
 
-question 1.2
-	http://man7.org/linux/man-pages/man3/pthread_create.3.html
+	question 1.2
+		http://man7.org/linux/man-pages/man3/pthread_create.3.html
 
-question 1.3
-	The usleep() function suspends execution of the calling thread for (at least) usec microseconds.
-	it changes the state of the threads from active to asleep.
-	it should change for every execution
+	question 1.3
+		The usleep() function suspends execution of the calling thread for (at least) usec microseconds.
+		it changes the state of the threads from active to asleep.
+		it should change for every execution
 
-question 1.4
-	it waits for all the threads to terminate, then it returns EXIT_SUCCES
-	at the end of there executions, the threads returns their tid.
-	the program will end before than all the threads finishes their execution. they will then be closed by force by the os
+	question 1.4
+		it waits for all the threads to terminate, then it returns EXIT_SUCCES
+		at the end of there executions, the threads returns their tid.
+		the program will end before than all the threads finishes their execution. they will then be closed by force by the os
 
-II parameter passing
+II. parameter passing
 	we created a structure containing the song and the number of time they had to sing. then we passed the pointer to the structure as argument of the function.
 
-III return value
+III. return value
 	question 1 :
 		this version of the program is just a for loop that add the element to the return value one after an other.
 
@@ -30,10 +31,10 @@ III return value
 	question 3 :
 		!!!! il faut que tu le fasse, mon ordi tourne trop vite et a INT_MAX nombre, je suis a 0 ms de temps d'éxécution!!!!!
 
-IV sharing variables
+IV. sharing variables
 	the principle is roughly the same as in the previous version exept that all the variables are stored into a table. the algorithm used to compute the sum of the treads is the sequential algorithm
 
-V search an element in a non-sorted vector
+V. search an element in a non-sorted vector
 	we had the same kind of problems as for the previous questions and resolves them the same way.
 
 	question 2
@@ -46,5 +47,5 @@ V search an element in a non-sorted vector
 		my computer is too power full, and as the program execute in 0 ms for INT_MAX, I had problem calculating the gain in speed.
 		because of the incriesed number of instruction and the fact that we have more memory to allocate. plus the time of sceduler.
 
-VI scalar product of two vectors
+VI. scalar product of two vectors
 	we had the same kind of problems as for the previous questions and resolves them the same way.
