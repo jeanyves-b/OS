@@ -17,3 +17,34 @@ question 1.4
 	at the end of there executions, the threads returns their tid.
 	the program will end before than all the threads finishes their execution. they will then be closed by force by the os
 
+II parameter passing
+	we created a structure containing the song and the number of time they had to sing. then we passed the pointer to the structure as argument of the function.
+
+III return value
+	question 1 :
+		this version of the program is just a for loop that add the element to the return value one after an other.
+
+	question 2 :
+		we had a problem passing the parameters to the threads while keeping the number of threads evolvable. to do so, we used a table of variables, each threads has access on ly to his part of the table and returns his value through the pthread_join function
+
+	question 3 :
+		!!!! il faut que tu le fasse, mon ordi tourne trop vite et a INT_MAX nombre, je suis a 0 ms de temps d'éxécution!!!!!
+
+IV sharing variables
+	the principle is roughly the same as in the previous version exept that all the variables are stored into a table. the algorithm used to compute the sum of the treads is the sequential algorithm
+
+V search an element in a non-sorted vector
+	we had the same kind of problems as for the previous questions and resolves them the same way.
+
+	question 2
+		they should stop.
+
+	question 3
+		it should a bit less (because we have more instructions) than two time faster as the agorithm will be exexuted 2 times in parallele.
+
+	question 4
+		my computer is too power full, and as the program execute in 0 ms for INT_MAX, I had problem calculating the gain in speed.
+		because of the incriesed number of instruction and the fact that we have more memory to allocate. plus the time of sceduler.
+
+VI scalar product of two vectors
+	we had the same kind of problems as for the previous questions and resolves them the same way.
