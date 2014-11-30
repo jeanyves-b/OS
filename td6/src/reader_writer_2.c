@@ -25,7 +25,6 @@ void begin_read(reader_writer_t rw)
 
 void end_read(reader_writer_t rw)
 {
-
 	tracing_record_event(t, ER_EVENT_ID);
 	pthread_mutex_unlock(rw->Mutex);
 }

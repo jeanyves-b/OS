@@ -16,6 +16,8 @@ If it doesn't find its id after 10 insertions
 struct linked_list_head list; 
 tracing_t t; 
 
+reader_writer_t rw = rw_init();
+
 void *thread_func(void *a){
 	int id = (long int)a;
 	tracing_register_thread(t, id); 

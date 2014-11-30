@@ -131,10 +131,10 @@ int main()
 {
 	for(int i=0 ; i<N ; i++)
 	{
-		pthread_mutex_init(myfiles[i]->writerMutex);
-		pthread_mutex_init(myfiles[i]->readerMutex);
-		pthread_cond_init(myfiles[i]->readerCond);
-		pthread_cond_init(myfiles[i]->writerCond);
+		pthread_mutex_init(&myfiles[i]->writerMutex);
+		pthread_mutex_init(&myfiles[i]->readerMutex);
+		pthread_cond_init(&myfiles[i]->readerCond);
+		pthread_cond_init(&myfiles[i]->writerCond);
 		myfiles[i]->name = strcat("test", itoa);
 		int myfiles[i]->nbreader = 0;
 		int myfiles[i]->nbwriter = 0;
