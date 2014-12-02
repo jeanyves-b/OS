@@ -19,14 +19,15 @@ int continues;
 reader_writer_t rw;
 
 void *thread_func(void *a){
-	while (continues == 0)
-	{
 		int id = (long int)a;
 		tracing_register_thread(t, id); 
 		int i ;
+	while (continues == 0)
+	{
 		for(i = 0; i < 10 && continues ==0; i++)
 		{
-			list_insert(&list, rand()%10);
+			if (rand()%3 == 0)
+				list_insert(&list, rand()%10);
 			if(list_exists(&list, id) && continues == 0)
 			{
 				continues=1;
@@ -60,7 +61,7 @@ int main(int argc, char **argv){
 	t = &tracing; 
 
 	/* set a timeout to kill the process in case of deadlock */
-	alarm(5); 
+	alarm(20); 
 	tracing_init(t, nb_threads); 
 
 	/* Give a human readable name to events */
