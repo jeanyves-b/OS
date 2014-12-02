@@ -49,15 +49,15 @@ void removefirst()
 {
 	if (first->next != NULL)
 	{
-		//fprintf(stderr, "free non NULL\n");
-		//buffer temp=first;
+		fprintf(stderr, "free non NULL\n");
+		buffer temp=first;
 		first = first->next;
-		//free(temp);
+		free(temp);
 	}
 	else
 	{
-		//fprintf(stderr, "free NULL\n");
-		//free(first);
+		fprintf(stderr, "free NULL\n");
+		free(first);
 	}
 }
 
@@ -94,11 +94,11 @@ void end_read(reader_writer_t rw)
 	pthread_mutex_lock(&(rw->Mutex));
 	rw->nbreader--;
 	tracing_record_event(t, ER_EVENT_ID);
-	pthread_mutex_unlock(&(rw->Mutex));
 	if (rw->nbreader == 0)
 	{
-		pthread_cond_broadcast(&(rw->Cond));
+		pthread_cond_signal(&(rw->Cond));
 	}
+	pthread_mutex_unlock(&(rw->Mutex));
 }
 
 void begin_write(reader_writer_t rw)
@@ -118,6 +118,6 @@ void end_write(reader_writer_t rw)
 	tracing_record_event(t, EW_EVENT_ID);
 	rw->writing = 0;
 	removefirst();
-	pthread_cond_broadcast(&(rw->Cond));
+	pthread_cond_signal(&(rw->Cond));
 	pthread_mutex_unlock(&(rw->Mutex));
 }

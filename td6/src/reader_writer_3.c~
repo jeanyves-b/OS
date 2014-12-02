@@ -28,7 +28,7 @@ buffer first, last;
 
 buffer addme(char type)
 {
-		fprintf(stderr, "malloc\n");
+		//fprintf(stderr, "malloc\n");
 	buffer this = malloc(sizeof(buffer_s));
 	this->type = type;
 	this->state = SLEEP;
@@ -50,14 +50,14 @@ void removefirst()
 	if (first->next != NULL)
 	{
 		fprintf(stderr, "free non NULL\n");
-		//buffer temp=first;
+		buffer temp=first;
 		first = first->next;
-		//free(temp);
+		free(temp);
 	}
 	else
 	{
 		fprintf(stderr, "free NULL\n");
-		//free(first);
+		free(first);
 	}
 }
 

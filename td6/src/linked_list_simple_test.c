@@ -15,24 +15,28 @@ If it doesn't find its id after 10 insertions
 
 struct linked_list_head list; 
 tracing_t t; 
-
+int continues;
 reader_writer_t rw;
 
 void *thread_func(void *a){
-	int id = (long int)a;
-	tracing_register_thread(t, id); 
-	int i ;
-	for(i = 0; i < 10; i++){
-		begin_write(rw);
-		list_insert(&list, rand()%10);
-		end_write(rw);
-		begin_read(rw);
-		if(list_exists(&list, id))
-		{
-			printf("Thread nmbr %d, won.\n", id); 
-			return NULL; 
+	while (continues == 0)
+	{
+		int id = (long int)a;
+		tracing_register_thread(t, id); 
+		int i ;
+		for(i = 0; i < 10; i++){
+			begin_write(rw);
+			list_insert(&list, rand()%10);
+			end_write(rw);
+			begin_read(rw);
+			if(list_exists(&list, id))
+			{
+				printf("Thread nmbr %d, won.\n", id); 
+				continues=1;
+				return NULL;
+			}
+			end_read(rw);
 		}
-		end_read(rw);
 	}
 	return NULL;
 }
@@ -44,6 +48,7 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 
+	continues = 0;
 	int nb_threads = atoi(argv[1]); 
 	
 	srand(time(NULL)*getpid()); 
