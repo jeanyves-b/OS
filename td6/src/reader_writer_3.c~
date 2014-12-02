@@ -29,16 +29,17 @@ buffer addme(char type)
 {
 	buffer this = malloc(sizeof(buffer_s));
 	this->type = type;
-	this->state = SLEEP;
 	if (first == NULL)
 	{
 		first = this;
 		last = this;
+		this->state = AWAKE;
 	}
 	else
 	{
 		last->next = this;
 		last = this;
+		this->state = SLEEP;
 	}
 	return this;
 }
@@ -55,6 +56,7 @@ void removefirst()
 	else
 	{
 		free(first);
+		first = NULL;
 	}
 }
 
@@ -74,49 +76,49 @@ void begin_read(reader_writer_t rw)
 {
 	pthread_mutex_lock(&(rw->Mutex));
 	buffer me = addme('r');
-	while ((me->state == SLEEP && me != first) || rw->writing != 0)
+	fprintf(stderr, "Begin read cond\n");
+	while (me->state == SLEEP)
 	{
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
 	}
+	fprintf(stderr, "out read\n");
 	rw->nbreader++;
-	if (me->next != NULL && me->next->type == 'w')
+	if (me->next != NULL)
 		me->next->state = AWAKE;
 	removefirst();
-	first->state = AWAKE;
-	fprintf(stderr, "BR\n");
+	if(first!=NULL)
+		first->state = AWAKE;
 	tracing_record_event(t, BR_EVENT_ID);
 	pthread_mutex_unlock(&(rw->Mutex));
 }
 
 void end_read(reader_writer_t rw)
 {
-//	pthread_mutex_lock(&(rw->Mutex));
 	rw->nbreader--;
-	fprintf(stderr, "ER %d\n",rw->nbreader);
 	tracing_record_event(t, ER_EVENT_ID);
 	pthread_cond_broadcast(&(rw->Cond));
-//	pthread_mutex_unlock(&(rw->Mutex));
 }
 
 void begin_write(reader_writer_t rw)
 {
 	pthread_mutex_lock(&(rw->Mutex));
 	buffer me = addme('w');
-	fprintf(stderr, "BBW\n");
-	while (rw->nbreader > 0 || (me->state == SLEEP && me != first))
+	fprintf(stderr, "begin write cond %d \n", me->state);
+	while (rw->nbreader > 0 || me->state == SLEEP)
 	{
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
+		fprintf(stderr, "retest %d\n",me->state);
 	}
+	fprintf(stderr, "out write\n");
 	removefirst();
-	first->state = AWAKE;
+	if(first!=NULL)
+		first->state = AWAKE;
 	tracing_record_event(t, BW_EVENT_ID);
-	fprintf(stderr, "BW\n");
 }
 
 void end_write(reader_writer_t rw)
 {
 	tracing_record_event(t, EW_EVENT_ID);
-	fprintf(stderr, "EW\n");
 	pthread_cond_broadcast(&(rw->Cond));
 	pthread_mutex_unlock(&(rw->Mutex));
 }
