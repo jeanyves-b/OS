@@ -28,7 +28,7 @@ void *thread_func(void *a){
 		{
 			if (rand()%3 == 0)
 				list_insert(&list, rand()%10);
-			if(list_exists(&list, id) && continues == 0)
+			if(rand()%3==0 && list_exists(&list, id) && continues ==0)
 			{
 				continues=1;
 				printf("Thread nmbr %d, won.\n", id); 
