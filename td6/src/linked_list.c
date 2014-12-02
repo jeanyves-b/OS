@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "linked_list.h"
 
 void list_init(struct linked_list_head *list) {  
@@ -36,6 +37,7 @@ void list_insert(struct linked_list_head *list, int val){
 int list_exists(struct linked_list_head *list, int val) {
   struct linked_list *p;
   begin_read(list->sync);
+  sleep(1);
   p=list->head;
   while (p) {
     if (p->nb==val) {

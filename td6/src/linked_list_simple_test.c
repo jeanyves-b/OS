@@ -24,12 +24,13 @@ void *thread_func(void *a){
 		int id = (long int)a;
 		tracing_register_thread(t, id); 
 		int i ;
-		for(i = 0; i < 10; i++){
+		for(i = 0; i < 10 && continues ==0; i++)
+		{
 			list_insert(&list, rand()%10);
-			if(list_exists(&list, id))
+			if(list_exists(&list, id) && continues == 0)
 			{
-				printf("Thread nmbr %d, won.\n", id); 
 				continues=1;
+				printf("Thread nmbr %d, won.\n", id); 
 				return NULL;
 			}
 		}
