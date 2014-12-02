@@ -16,7 +16,7 @@ If it doesn't find its id after 10 insertions
 struct linked_list_head list; 
 tracing_t t; 
 
-reader_writer_t rw = rw_init();
+reader_writer_t rw;
 
 void *thread_func(void *a){
 	int id = (long int)a;
@@ -38,7 +38,7 @@ void *thread_func(void *a){
 }
 
 int main(int argc, char **argv){
-	
+	rw = rw_init();
 	if(argc != 2){
 		printf("usage : %s nb_threads\n", argv[0]); 
 		exit(1);

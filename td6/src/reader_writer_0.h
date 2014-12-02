@@ -11,6 +11,8 @@
    anywhere in the code */ 
 typedef void *reader_writer_t;
 
+reader_writer_t rw_init();
+
 void init(reader_writer_t rw); 
 
 void begin_read(reader_writer_t rw);

@@ -26,20 +26,22 @@ reader_writer_t rw_init()
 
 void begin_read(reader_writer_t rw)
 {
+	pthread_mutex_lock(&(rw->Mutex));
 	if (rw->writing == 1)
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
 	rw->nbreader++;
 	tracing_record_event(t, BR_EVENT_ID);
+	pthread_mutex_unlock(&(rw->Mutex));
 }
 
 void end_read(reader_writer_t rw)
 {
 	pthread_mutex_lock(&(rw->MutexRead));
 	rw->nbreader--;
-	pthread_mutex_unlock(&(rw->MutexRead));
 	if (rw->nbreader == 0)
-		{pthread_cond_broadcast(&(rw->CondRead))};
+		{pthread_cond_broadcast(&(rw->Cond));}
 	tracing_record_event(t, ER_EVENT_ID);
+	pthread_mutex_unlock(&(rw->MutexRead));
 }
 
 void begin_write(reader_writer_t rw)
@@ -47,7 +49,7 @@ void begin_write(reader_writer_t rw)
 	pthread_mutex_lock(&(rw->Mutex));
 	rw->writing = 1;
 	while (rw->nbreader > 0)
-		pthread_cond_wait(&(rw->CondRead), &(rw->MutexRead));
+		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
 	tracing_record_event(t, BW_EVENT_ID);
 }
 
