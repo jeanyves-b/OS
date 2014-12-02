@@ -76,12 +76,10 @@ void begin_read(reader_writer_t rw)
 {
 	pthread_mutex_lock(&(rw->Mutex));
 	buffer me = addme('r');
-	fprintf(stderr, "Begin read cond\n");
 	while (me->state == SLEEP)
 	{
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
 	}
-	fprintf(stderr, "out read\n");
 	rw->nbreader++;
 	if (me->next != NULL)
 		me->next->state = AWAKE;
@@ -103,13 +101,10 @@ void begin_write(reader_writer_t rw)
 {
 	pthread_mutex_lock(&(rw->Mutex));
 	buffer me = addme('w');
-	fprintf(stderr, "begin write cond %d \n", me->state);
 	while (rw->nbreader > 0 || me->state == SLEEP)
 	{
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
-		fprintf(stderr, "retest %d\n",me->state);
 	}
-	fprintf(stderr, "out write\n");
 	removefirst();
 	if(first!=NULL)
 		first->state = AWAKE;

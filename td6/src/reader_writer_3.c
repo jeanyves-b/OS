@@ -56,6 +56,7 @@ void removefirst()
 	else
 	{
 		free(first);
+		first = NULL;
 	}
 }
 
@@ -65,7 +66,6 @@ reader_writer_t rw_init()
 	pthread_mutex_init(&(rw->Mutex), NULL);
 	pthread_cond_init(&(rw->Cond), NULL);
 	rw->nbreader = 0;
-	rw->writing = 0;
 	first = NULL;
 	return rw; 
 }
