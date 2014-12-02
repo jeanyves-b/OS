@@ -32,7 +32,8 @@ void *thread_func(void *a){
 			if(list_exists(&list, id))
 			{
 				printf("Thread nmbr %d, won.\n", id); 
-				return NULL; 
+				continues=1;
+				return NULL;
 			}
 			end_read(rw);
 		}

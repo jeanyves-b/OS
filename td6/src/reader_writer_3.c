@@ -8,7 +8,6 @@ extern tracing_t t;
 
 typedef struct reader_writer
 {
-	pthread_mutex_t MutexRead;
 	pthread_mutex_t Mutex;
 	pthread_cond_t Cond;
 	int nbreader;
@@ -28,7 +27,6 @@ buffer first, last;
 
 buffer addme(char type)
 {
-		//fprintf(stderr, "malloc\n");
 	buffer this = malloc(sizeof(buffer_s));
 	this->type = type;
 	this->state = SLEEP;
@@ -49,14 +47,12 @@ void removefirst()
 {
 	if (first->next != NULL)
 	{
-		fprintf(stderr, "free non NULL\n");
-		buffer temp=first;
+		//buffer temp=first;
 		first = first->next;
-		free(temp);
+		//free(temp);
 	}
 	else
 	{
-		fprintf(stderr, "free NULL\n");
 		free(first);
 	}
 }
@@ -84,8 +80,8 @@ void begin_read(reader_writer_t rw)
 	rw->nbreader++;
 	if (me->next != NULL && me->next->type == 'w')
 		me->next->state = AWAKE;
-	tracing_record_event(t, BR_EVENT_ID);
 	removefirst();
+	tracing_record_event(t, BR_EVENT_ID);
 	pthread_mutex_unlock(&(rw->Mutex));
 }
 
@@ -104,12 +100,12 @@ void end_read(reader_writer_t rw)
 void begin_write(reader_writer_t rw)
 {
 	pthread_mutex_lock(&(rw->Mutex));
-	rw->writing = 1;
 	buffer me = addme('w');
-	while (rw->nbreader > 0 && me->state == SLEEP)
+	while (rw->nbreader > 0 && me->state == SLEEP && rw->writing == 1)
 	{
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
 	}
+	rw->writing = 1;
 	tracing_record_event(t, BW_EVENT_ID);
 }
 
