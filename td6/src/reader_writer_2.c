@@ -10,7 +10,7 @@ typedef struct reader_writer
 	pthread_mutex_t Mutex;
 	pthread_cond_t Cond;
 	int nbreader;
-	char writing=0;
+	char writing;
 } reader_writer_s; 
 
 reader_writer_t rw_init()
@@ -19,6 +19,7 @@ reader_writer_t rw_init()
 	pthread_mutex_init(&(rw->Mutex), NULL);
 	pthread_cond_init(&(rw->Cond), NULL);
 	rw->nbreader = 0;
+	rw->writing = 0;
 	return rw; 
 }
 
@@ -27,9 +28,7 @@ void begin_read(reader_writer_t rw)
 {
 	if (rw->writing == 1)
 		pthread_cond_wait(&(rw->Cond), &(rw->Mutex));
-	pthread_mutex_lock(&(rw->MutexRead));
 	rw->nbreader++;
-	pthread_mutex_unlock(&(rw->MutexRead));
 	tracing_record_event(t, BR_EVENT_ID);
 }
 
@@ -38,7 +37,8 @@ void end_read(reader_writer_t rw)
 	pthread_mutex_lock(&(rw->MutexRead));
 	rw->nbreader--;
 	pthread_mutex_unlock(&(rw->MutexRead));
-	pthread_cond_broadcast(&(rw->CondRead))
+	if (rw->nbreader == 0)
+		{pthread_cond_broadcast(&(rw->CondRead))};
 	tracing_record_event(t, ER_EVENT_ID);
 }
 
